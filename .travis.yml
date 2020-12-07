@@ -7,3 +7,16 @@ before_install:
 
 script:
   - docker run rama89/react-web-app yarn test a -- --coverage --watchAll=false
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'ap-south-1'
+  app: 'docker-react-web-app'
+  env: 'DockerReactWebApp-env'
+  bucket_name: 'elasticbeanstalk-ap-south-1-888746663175'
+  bucket_path: 'docker-react-web-app'
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: '$AWS_SECRET_KEY'

@@ -10,7 +10,6 @@ COPY . .
 RUN yarn build
 
 ##########################
-
 FROM nginx:1.19
 
 EXPOSE 80
