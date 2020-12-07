@@ -6,4 +6,4 @@ before_install:
   - docker build -t rama89/react-web-app -f Dockerfile.dev .
 
 script:
-  - docker run rama89/react-web-app yarn test a -- --coverage
+  - docker run rama89/react-web-app yarn test a -- --coverage --watchAll=false
