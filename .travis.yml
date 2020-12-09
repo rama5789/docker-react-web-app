@@ -8,9 +8,10 @@ before_install:
 script:
   - docker run rama89/react-web-app-test yarn test a -- --coverage --watchAll=false
 
-after_success:
-  - docker build -t rama89/react-web-app-travis .
-  # Log into the docker CLI
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-  # Push the image to Docker Hub
-  - docker push rama89/react-web-app-travis
+deploy:
+  # Deploy to Heroku
+  - provider: heroku
+    app: 'docker-react-web-app'
+    on:
+      branch: master
+    api_key: $HEROKU_AUTH_TOKEN
