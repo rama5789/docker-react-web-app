@@ -9,7 +9,7 @@ script:
   - docker run rama89/react-web-app-test yarn test a -- --coverage --watchAll=false
 
 after_success:
-  - docker build -t rama89/react-web-app-travis -f Dockerfile.prod .
+  - docker build -t rama89/react-web-app-travis .
   # Log into the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Push the image to Docker Hub
@@ -21,6 +21,7 @@ deploy:
     region: 'ap-south-1'
     app: 'docker'
     env: 'Docker-env'
+    label: 'Sample Application'
     bucket_name: 'elasticbeanstalk-ap-south-1-888746663175'
     bucket_path: 'docker'
     on:
