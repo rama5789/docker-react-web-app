@@ -21,7 +21,7 @@ deploy:
     region: 'ap-south-1'
     app: 'docker'
     env: 'Docker-env'
-    label: 'Sample Application'
+    label: 'react-web-app'
     bucket_name: 'elasticbeanstalk-ap-south-1-888746663175'
     bucket_path: 'docker'
     on:
