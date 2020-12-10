@@ -9,7 +9,7 @@ script:
   - docker run rama89/react-web-app-test yarn test a -- --coverage --watchAll=false
 
 after_success:
-  - docker build -t rama89/react-web-app-travis .
+  - docker build -t rama89/react-web-app-travis -f Dockerfile.prod .
   # Log into the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Push the image to Docker Hub
@@ -27,10 +27,3 @@ deploy:
       branch: master
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key: $AWS_SECRET_KEY
-
-  # Deploy to Heroku
-  - provider: heroku
-    app: 'docker-react-web-app'
-    on:
-      branch: master
-    api_key: $HEROKU_AUTH_TOKEN
