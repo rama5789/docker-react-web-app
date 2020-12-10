@@ -8,7 +8,26 @@ before_install:
 script:
   - docker run rama89/react-web-app-test yarn test a -- --coverage --watchAll=false
 
+after_success:
+  - docker build -t rama89/react-web-app-travis .
+  # Log into the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push the image to Docker Hub
+  - docker push rama89/react-web-app-travis
+
 deploy:
+  # Deploy to AWS Elastic Beanstalk
+  - provider: elasticbeanstalk
+    region: 'ap-south-1'
+    app: 'docker'
+    env: 'Docker-env'
+    bucket_name: 'elasticbeanstalk-ap-south-1-888746663175'
+    bucket_path: 'docker'
+    on:
+      branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+
   # Deploy to Heroku
   - provider: heroku
     app: 'docker-react-web-app'

@@ -1,0 +1,18 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "react-web-app",
+      "image": "rama89/react-web-app-travis",
+      "hostname": "react-web-app",
+      "essential": true,
+      "memory": 1024,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ]
+    }
+  ]
+}
