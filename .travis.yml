@@ -3,28 +3,20 @@ services:
   - docker
 
 before_install:
-  - docker build -t rama89/react-web-app-test -f Dockerfile.dev .
+  - docker build -t rama89/fib-calculator-client-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run rama89/react-web-app-test yarn test a -- --coverage --watchAll=false
+  - docker run rama89/fib-calculator-client-test npm test -- --coverage
 
 after_success:
-  - docker build -t rama89/react-web-app-travis .
-  # Log into the docker CLI
+  - docker build -t rama89/fib-calculator-client ./client
+  - docker build -t rama89/fib-calculator-nginx ./nginx
+  - docker build -t rama89/fib-calculator-server ./server
+  - docker build -t rama89/fib-calculator-worker ./worker
+  # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Push the image to Docker Hub
-  - docker push rama89/react-web-app-travis
-
-deploy:
-  # Deploy to AWS Elastic Beanstalk
-  - provider: elasticbeanstalk
-    region: 'ap-south-1'
-    app: 'docker'
-    env: 'Docker-env'
-    label: 'react-web-app'
-    bucket_name: 'elasticbeanstalk-ap-south-1-888746663175'
-    bucket_path: 'docker'
-    on:
-      branch: master
-    access_key_id: $AWS_ACCESS_KEY
-    secret_access_key: $AWS_SECRET_KEY
+  - docker push rama89/fib-calculator-client
+  - docker push rama89/fib-calculator-nginx
+  - docker push rama89/fib-calculator-server
+  - docker push rama89/fib-calculator-worker

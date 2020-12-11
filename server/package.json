@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "body-parser": "1.19.0",
+    "cors": "2.8.4",
+    "express": "4.17.1",
+    "pg": "7.4.3",
+    "redis": "3.0.2"
+  },
+  "devDependencies": {
+    "node-dev": "6.2.0"
+  },
+  "scripts": {
+    "start:dev": "node-dev index.js",
+    "start": "node index.js"
+  }
+}

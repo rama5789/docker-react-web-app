@@ -1,19 +1,65 @@
 version: '3'
 services:
-  web:
+  # <--- External Databases: --->
+  postgres:
+    image: postgres:12.4
+    # ports:
+    #  - 5432:5432
+    environment:
+      - POSTGRES_DB=postgres_db
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=postgres_password    
+  redis:
+    image: redis:6.0.8
+    # ports:
+    #  - 6379:6379
+
+  # <--- Microservices: --->    
+  worker:
+    # restart: always
     build:
-      context: .
       dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes:
+      - /app/node_modules
+      - ./worker:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+  api:
+    # restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./server
+    # ports:
+    #  - 5000:5000
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=postgres_db
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=postgres_password
+  client:
+    # restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client
+    # ports:
+    #  - 3000:3000
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+
+  # <--- Reverse Proxy & Load Balancer ("Single Point of Entry"): --->
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
     ports:
-      - 3000:3000
-    volumes:
-      - /usr/app/node_modules
-      - .:/usr/app
-  tests:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /usr/app/node_modules
-      - .:/usr/app
-    command: ['yarn', 'test']
+      - 80:80 # Internet Facing Port
