@@ -20,17 +20,21 @@ services:
     build:
       dockerfile: Dockerfile.dev
       context: ./worker
+    image: rama89/fib-calculator-worker_dev
     volumes:
       - /app/node_modules
       - ./worker:/app
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+    depends_on:
+      - redis
   api:
     # restart: always
     build:
       dockerfile: Dockerfile.dev
       context: ./server
+    image: rama89/fib-calculator-server_dev
     # ports:
     #  - 5000:5000
     volumes:
@@ -44,16 +48,22 @@ services:
       - POSTGRES_DB=postgres_db
       - POSTGRES_USER=postgres_user
       - POSTGRES_PASSWORD=postgres_password
+    depends_on:
+      - postgres
+      - redis
   client:
     # restart: always
     build:
       dockerfile: Dockerfile.dev
       context: ./client
+    image: rama89/fib-calculator-client_dev
     # ports:
     #  - 3000:3000
     volumes:
       - /app/node_modules
       - ./client:/app
+    depends_on:
+      - api
 
   # <--- Reverse Proxy & Load Balancer ("Single Point of Entry"): --->
   nginx:
@@ -61,5 +71,9 @@ services:
     build:
       dockerfile: Dockerfile.dev
       context: ./nginx
+    image: rama89/fib-calculator-nginx_dev
     ports:
       - 80:80 # Internet Facing Port
+    depends_on:
+      - client
+      - api

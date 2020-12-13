@@ -3,20 +3,20 @@ services:
   - docker
 
 before_install:
-  - docker build -t rama89/fib-calculator-client-test -f ./client/Dockerfile.dev ./client
+  - docker build -t rama89/fib-calculator-client_test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run rama89/fib-calculator-client-test npm test -- --coverage
+  - docker run rama89/fib-calculator-client_test npm test -- --coverage
 
 after_success:
+  - docker build -t rama89/fib-calculator-worker ./worker
+  - docker build -t rama89/fib-calculator-server ./server
   - docker build -t rama89/fib-calculator-client ./client
   - docker build -t rama89/fib-calculator-nginx ./nginx
-  - docker build -t rama89/fib-calculator-server ./server
-  - docker build -t rama89/fib-calculator-worker ./worker
   # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Push the image to Docker Hub
+  - docker push rama89/fib-calculator-worker
+  - docker push rama89/fib-calculator-server
   - docker push rama89/fib-calculator-client
   - docker push rama89/fib-calculator-nginx
-  - docker push rama89/fib-calculator-server
-  - docker push rama89/fib-calculator-worker
